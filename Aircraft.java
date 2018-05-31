@@ -9,7 +9,7 @@ public class Aircraft {
 	private final String name;
 	private final String destination;
 	
-	private volatile String status; // Flying/Landed/Parked/Runway
+	private volatile String status; // Flying -> Runway -> Parked -> Landed -> Runway
 	private String prevStatus;
 
 	private long releaseTime = -1;
@@ -19,14 +19,13 @@ public class Aircraft {
 		this.name = name;
 		this.destination = destination;
 
-		// status = (new java.util.Random().nextInt(100) > 50) ? STATUS_FLYING : STATUS_LANDED;
-		status = STATUS_FLYING;
+		status = (new java.util.Random().nextInt(100) > 50) ? STATUS_FLYING : STATUS_LANDED;
 		prevStatus = null;
 		
 		if (isLanded()) {
-			Main.addLog(String.format("[ID: %d] (1/5) %s created and is waiting for depature to %s", ID, name, destination), ID);
+			Util.addLog(String.format("[ID: %d] (1/5) %s created and is waiting for depature to %s", ID, name, destination), ID);
 		} else if (isFlying()) {
-			Main.addLog(String.format("[ID: %d] (1/5) %s created and is arriving soon from %s", ID, name, destination), ID);
+			Util.addLog(String.format("[ID: %d] (1/5) %s created and is arriving soon from %s", ID, name, destination), ID);
 		}
 	}
 
@@ -55,7 +54,6 @@ public class Aircraft {
 
 	public synchronized void park(long parkedTime, long wait) {
 		setParked();
-
 		releaseTime = parkedTime + wait;
 	}
 
@@ -63,6 +61,7 @@ public class Aircraft {
 		if (releaseTime != -1) {
 			if (System.currentTimeMillis() >= releaseTime) {
 				unsetParked();
+				releaseTime = -1;
 			}
 		} 
 	}

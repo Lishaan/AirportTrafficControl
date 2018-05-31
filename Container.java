@@ -18,22 +18,18 @@ public class Container<T> {
 	}
 
 	public synchronized ArrayList<T> getArrayList() {
-		notifyAll();
 		return items;
 	}
 
 	public synchronized T get(int index) {
-		notifyAll();
 		return items.get(index);
 	}
 
 	public synchronized void remove(int index) {
 		items.remove(index);
-		notifyAll();
 	}
 
 	public synchronized boolean isEmpty() {
-		notifyAll();
 		return items.size() <= 0;
 	}
 }
