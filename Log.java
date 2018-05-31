@@ -1,10 +1,10 @@
 public class Log {
-	// private final int aircraftID;
+	private final int aircraftID;
 	private final String message;
 	private final Long timeCreated;
 
-	public Log(String msg) {
-		
+	public Log(String msg, int ID) {
+		aircraftID = ID;
 		message = msg;
 		timeCreated = System.currentTimeMillis();
 	}
@@ -20,4 +20,6 @@ public class Log {
 
 		return String.format("%s - %s", output, this.message);
 	}
+
+	public int getID() { return aircraftID; }
 }

@@ -26,15 +26,18 @@ public class Main {
 				int spawnCount = 2;
 
 				// for (int i = 0; i < spawnCount; i++) {
-				while (true) {
+				// while (true) {
 					try {
 						int spawnTime = 2;
 						// int spawnTime = new java.util.Random().nextInt(5) + 5;
 						// Thread.sleep(3000); // Wait time
 
-						Main.addLog(String.format("Creating an Aircraft in %d seconds", spawnTime));
+						// Main.addLog(String.format("Creating an Aircraft in %d seconds", spawnTime));
 
-						Thread.sleep(spawnTime*1000);
+						// Thread.sleep(spawnTime*1000);
+						aircraftContainer.add(Airport.newAircraft());
+						aircraftContainer.add(Airport.newAircraft());
+						aircraftContainer.add(Airport.newAircraft());
 						aircraftContainer.add(Airport.newAircraft());
 						aircraftContainer.add(Airport.newAircraft());
 
@@ -45,7 +48,7 @@ public class Main {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-				}
+				// }
 			}
 		};
 
@@ -87,7 +90,7 @@ public class Main {
 
 			String startTime = Util.formatTime(System.currentTimeMillis());
 
-			String init = String.format("Start time: %s\nDuration: %d seconds\n\n", startTime, duration/1000);
+			String init = String.format("Start time: %s\nDuration: %d seconds\n", startTime, duration/1000);
 
 			writer.print(init);
 			writer.close();
@@ -96,20 +99,43 @@ public class Main {
 		}
 	}
 	
-	public static void addLog(String message) {
-		Log log = new Log(message);
+	public static void addLog(String message, int ID) {
+		Log log = new Log(message, ID);
 		logs.add(log);
 	}
 
 	public static void writeToLogsSorted() {
-		for (Log log : logs) { 
-			writeToLogFile(log);
+		int ID = 0;
+		int highest = -1;
+
+		for (int i = 0; i < logs.size(); i++) {
+			if (logs.get(i).getID() >= highest) {
+				highest = logs.get(i).getID();
+			}
+		}
+
+		for (int x = 0; x < highest; x++) {
+			for (int i = 0; i < logs.size(); i++) {
+				if (ID == logs.get(i).getID()) {
+					writeToLogFile(logs.get(i));
+				}
+			}
+			writeToLogFile("");
+			ID++;
 		}
 	}
 
 	private static void writeToLogFile(Log log) {
 		try {
 			java.nio.file.Files.write(java.nio.file.Paths.get("log.txt"), (log.toString() + "\n").getBytes(), java.nio.file.StandardOpenOption.APPEND);
+		} catch (java.io.IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void writeToLogFile(String message) {
+		try {
+			java.nio.file.Files.write(java.nio.file.Paths.get("log.txt"), (message + "\n").getBytes(), java.nio.file.StandardOpenOption.APPEND);
 		} catch (java.io.IOException e) {
 			e.printStackTrace();
 		}
@@ -178,12 +204,12 @@ public class Main {
 
 		String total_out = String.format("\nTotal Arrivals: %d\nTotal Departures: %d", total_a, total_d);
 
-		writeToLogFile(new Log(r1out));
-		writeToLogFile(new Log(r2out));
-		writeToLogFile(new Log(r3out));
-		writeToLogFile(new Log(total_out));
+		writeToLogFile(new Log(r1out, 0));
+		writeToLogFile(new Log(r2out, 0));
+		writeToLogFile(new Log(r3out, 0));
+		writeToLogFile(total_out);
 
-		System.out.println("End");
+		System.out.println("\nEnd");
 		System.out.println(r1out);
 		System.out.println(r2out);
 		System.out.println(r3out);

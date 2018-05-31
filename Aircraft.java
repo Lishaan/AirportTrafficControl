@@ -24,9 +24,9 @@ public class Aircraft {
 		prevStatus = null;
 		
 		if (isLanded()) {
-			Main.addLog(String.format("[ID: %d] (1/5) %s created and is waiting for depature to %s", ID, name, destination));
+			Main.addLog(String.format("[ID: %d] (1/5) %s created and is waiting for depature to %s", ID, name, destination), ID);
 		} else if (isFlying()) {
-			Main.addLog(String.format("[ID: %d] (1/5) %s created and is arriving soon from %s", ID, name, destination));
+			Main.addLog(String.format("[ID: %d] (1/5) %s created and is arriving soon from %s", ID, name, destination), ID);
 		}
 	}
 
