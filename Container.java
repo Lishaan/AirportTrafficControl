@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Container<T> {
-	private int size;
+	private final int size;
 	private volatile ArrayList<T> items;
 
 	public Container(int size) {

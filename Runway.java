@@ -9,9 +9,8 @@ public class Runway implements Runnable {
 	private volatile String status;
 	private volatile String currentAircraft;
 	private volatile boolean run;
-
-	private int departureCount;
-	private int arrivalCount;
+	private volatile int departureCount;
+	private volatile int arrivalCount;
 
 	private volatile Container<Aircraft> aircraftContainer;
 
@@ -60,6 +59,7 @@ public class Runway implements Runnable {
 				synchronized(aircraft) {
 					if (aircraft.isFlying()) {
 						aircraft.setAtRunway();
+						this.arrivalCount++;
 
 						// Landing (Arrivals)
 						Util.addLog(String.format("[ID: %d] (2/5) %s is landing at Runway %d in 10seconds", aircraft.getID(), aircraft.getName(), this.getID()), aircraft.getID());
@@ -79,7 +79,6 @@ public class Runway implements Runnable {
 						
 						aircraft.unsetAtRunway();
 						aircraft.switchStatus();
-						this.arrivalCount++;
 
 						// Parking 
 						final int parkTime = (new java.util.Random().nextInt(10) + 5) * 1000;
@@ -94,6 +93,7 @@ public class Runway implements Runnable {
 				synchronized(aircraft) {
 					if (aircraft.isLanded() && checkForNext) {
 						aircraft.setAtRunway();
+						this.departureCount++;
 
 						// Takeoff (Departure)
 						final int takeOffTime = new java.util.Random().nextInt(5) + 5;
@@ -112,7 +112,6 @@ public class Runway implements Runnable {
 						// removing the aircraft from aircraftContainer
 						for (int i = 0; i < aircraftContainer.getArrayList().size(); i++) {
 							if (aircraftContainer.getArrayList().get(i).getID() == aircraft.getID()) {
-								this.departureCount++;
 								aircraftContainer.remove(i);
 								Util.addLog(String.format("[ID: %d] (5/5) %s has flown off from Runway %d to %s", aircraft.getID(), aircraft.getName(), this.getID(), aircraft.getDestination()), aircraft.getID());
 								break;

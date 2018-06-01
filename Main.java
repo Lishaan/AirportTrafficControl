@@ -3,11 +3,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		Util.clearScreen();
 		System.out.print("Enter simulation time (seconds): ");
 		final long duration = (new java.util.Scanner(System.in).nextLong()) * 1000;
+
 		Util.initLogFile(duration);
+		final int logsCount = 10;
 		
 		final long startTime = System.currentTimeMillis();
 		final long endTime = startTime + duration;
@@ -20,37 +22,46 @@ public class Main {
 			new Runway(aircraftContainer)
 		};
 
-		ExecutorService runwayExecutor = Executors.newFixedThreadPool(3);
-		ExecutorService spawnerExecutor = Executors.newCachedThreadPool();
+		Thread spawnerThread = new Thread(aircraftSpawner);
+		ExecutorService runwayExecutor = Executors.newFixedThreadPool(runways.length);
+
+		spawnerThread.start();
 
 		for (Runway runway : runways) {
 			runwayExecutor.execute(runway);
 		}
 
-		spawnerExecutor.execute(aircraftSpawner);
+		// Display Thread
+		boolean ended = false;
 
 		do {
 			Util.clearScreen();
-
 			Util.printCurrentTime(startTime, duration);
 			synchronized(aircraftContainer) {
 				Util.printAircraftStatuses(aircraftContainer.getArrayList());
 			}
 			Util.printRunwayStatuses(runways);
-			Util.printLogs(20);
+			Util.printLogs(logsCount);
 
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if (!(System.currentTimeMillis() <= endTime)){
+				aircraftSpawner.stop();
 			}
-		} while ((System.currentTimeMillis() <= endTime) || (!aircraftContainer.isEmpty()));
+
+			ended = !(System.currentTimeMillis() <= endTime) && (aircraftContainer.isEmpty());
+
+			Thread.sleep(1000);
+
+		} while (!ended);
 
 		runwayExecutor.shutdown();
-		spawnerExecutor.shutdown();
 
-		Util.writeToLogsSorted();
-		Util.printRunwayStats(runways);
+		while (!runwayExecutor.isTerminated()) {
+			if (ended) {
+				Util.writeToLogsSorted();
+				Util.printRunwayStats(runways);
+				break;
+			}
+		}
 
 		System.exit(0);
 	}
