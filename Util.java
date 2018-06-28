@@ -20,13 +20,13 @@ class Util {
 		}
 	}
 	
-	public static void addLog(String message, int ID) {
+	public synchronized static void addLog(String message, int ID) {
 		Log log = new Log(message, ID);
 		logs.add(log);
 	}
 
 	public static void writeToLogsSorted() {
-		int ID = 0;
+		int ID = 1;
 		int highest = -1;
 
 		for (int i = 0; i < logs.size(); i++) {
@@ -35,7 +35,17 @@ class Util {
 			}
 		}
 
-		for (int x = 0; x < highest; x++) {
+		ArrayList<Log> spawns = new ArrayList<Log>();
+
+		for (int i = 0; i < logs.size(); i++) {
+			if (logs.get(i).getID() == 0) {
+				spawns.add(logs.get(i));
+			}
+		}
+
+		for (int x = 0; x < spawns.size(); x++) {
+			writeToLogFile(spawns.get(x));
+
 			for (int i = 0; i < logs.size(); i++) {
 				if (ID == logs.get(i).getID()) {
 					writeToLogFile(logs.get(i));
@@ -116,14 +126,14 @@ class Util {
 		System.out.println();
 	}
 
-	public static void printRunwayStats(Runway[] runways) {
-		String r1out = String.format("Runway 1 [Arrivals: %d | Departures: %d]", 
+	public static void printRunwayStats(Runway[] runways, long endTime) {
+		String r1out = String.format("Runway 1 [Arrivals: %2d | Departures: %2d]", 
 			runways[0].getArrivalCount(), 
 			runways[0].getDepartureCount());
-		String r2out = String.format("Runway 2 [Arrivals: %d | Departures: %d]", 
+		String r2out = String.format("Runway 2 [Arrivals: %2d | Departures: %2d]", 
 			runways[1].getArrivalCount(), 
 			runways[1].getDepartureCount());
-		String r3out = String.format("Runway 3 [Arrivals: %d | Departures: %d]", 
+		String r3out = String.format("Runway 3 [Arrivals: %2d | Departures: %2d]", 
 			runways[2].getArrivalCount(), 
 			runways[2].getDepartureCount());
 
@@ -131,17 +141,20 @@ class Util {
 		int total_d = runways[0].getDepartureCount() + runways[1].getDepartureCount() + runways[2].getDepartureCount();
 
 		String total_out = String.format("\nTotal Arrivals: %d\nTotal Departures: %d", total_a, total_d);
+		String endTime_out = "\nEnd Time: " + Util.formatTime(endTime, false);
 
 		writeToLogFile(new Log(r1out, 0));
 		writeToLogFile(new Log(r2out, 0));
 		writeToLogFile(new Log(r3out, 0));
 		writeToLogFile(total_out);
+		writeToLogFile(endTime_out);
 
 		System.out.println("End\n");
 		System.out.println(r1out);
 		System.out.println(r2out);
 		System.out.println(r3out);
 		System.out.println(total_out);
+		System.out.println(endTime_out);
 	}
 	
 	public static void clearScreen() {

@@ -10,26 +10,33 @@ public class Aircraft {
 	private final String destination;
 	
 	private volatile String status; // Flying -> Runway -> Parked -> Landed -> Runway
-	private String prevStatus;
+	private volatile String prevStatus;
 
 	private long releaseTime = -1;
 
-	public Aircraft(String name, String destination) {
-		this.ID = Aircraft.ID_INC++;
+	public Aircraft() {
+		this("Null", "Null", false);
+	}
+
+	public Aircraft(String name, String destination, boolean addLog) {
 		this.name = name;
 		this.destination = destination;
 
 		status = (new java.util.Random().nextInt(100) > 50) ? STATUS_FLYING : STATUS_LANDED;
 		prevStatus = null;
-		
-		if (isLanded()) {
-			Util.addLog(String.format("[ID: %d] (1/5) %s created and is waiting for depature to %s", ID, name, destination), ID);
-		} else if (isFlying()) {
-			Util.addLog(String.format("[ID: %d] (1/5) %s created and is arriving soon from %s", ID, name, destination), ID);
+
+		if (addLog) {
+			this.ID = Aircraft.ID_INC++;
+
+			if (isLanded()) {
+				Util.addLog(String.format("[ID: %d] (1/5) %s created and is waiting for depature to %s", ID, name, destination), ID);
+			} else if (isFlying()) {
+				Util.addLog(String.format("[ID: %d] (1/5) %s created and is arriving soon from %s", ID, name, destination), ID);
+			}
+		} else {
+			this.ID = 0;
 		}
 	}
-
-	public Aircraft copy() { return this; }
 
 	public synchronized void switchStatus() {
 		if (status.equals(STATUS_FLYING)) {
@@ -77,6 +84,10 @@ public class Aircraft {
 		} else {
 			status = prevStatus;
 		}
+	}
+
+	public @Override String toString() {
+		return String.format("%s [ID: %d]", getName(), getID());
 	}
 
 	public synchronized boolean isFlying() { return status.equals(STATUS_FLYING); }

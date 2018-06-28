@@ -1,35 +1,40 @@
-import java.util.Random;
-
 public class Spawner implements Runnable {
 	private volatile Container<Aircraft> aircraftContainer;
 	private volatile boolean run;
-	private Random randGenerator;
+	private long endTime;
 
 	public Spawner(Container<Aircraft> container) {
 		aircraftContainer = container;
 		run = true;
-		randGenerator = new java.util.Random();
+		endTime = -1;
 	}
 
 	public @Override void run() {
-		// int spawnCount = 2;
-		// for (int i = 0; i < spawnCount; i++) {
 		while (run) {
-			int spawnTime = 4;
-			// int spawnTime = randGenerator.nextInt(5) + 3;
-			// Thread.sleep(3000); // Wait time
+			synchronized (this) {
+				try {
+					int spawnTime = new java.util.Random().nextInt(5) + 4;
 
-			Util.addLog(String.format("Creating an Aircraft in %d seconds", spawnTime), 0);
-			try {
-				Thread.sleep(spawnTime*1000);
-				aircraftContainer.add(Airport.newAircraft());
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+					Util.addLog(String.format("Creating an Aircraft in %d seconds", spawnTime), 0);
+
+					wait(spawnTime*1000);
+
+					aircraftContainer.add(Airport.newAircraft());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
 
-	public void stop() {
+	public synchronized void stop() {
 		run = false;
+		if (endTime == -1) {
+			endTime = System.currentTimeMillis();
+		}
+	}
+
+	public String getEndTime() {
+		return Util.formatTime(endTime);
 	}
 }

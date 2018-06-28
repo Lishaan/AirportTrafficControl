@@ -1,46 +1,23 @@
-Start time: 13:57:24
-Duration: 30 seconds
+Start time: 15:51:25
+Duration: 10 seconds
 
-13:57:24 - Creating an Aircraft in 4 seconds
-13:57:28 - Creating an Aircraft in 4 seconds
-13:57:32 - Creating an Aircraft in 4 seconds
-13:57:36 - Creating an Aircraft in 4 seconds
-13:57:40 - Creating an Aircraft in 4 seconds
-13:57:44 - Creating an Aircraft in 4 seconds
-13:57:48 - Creating an Aircraft in 4 seconds
-13:57:52 - Creating an Aircraft in 4 seconds
+15:51:26 - Creating an Aircraft in 8 seconds
+15:51:34 - [ID: 1] (1/5) Boeing 717 created and is arriving soon from Jakarta
+15:51:34 - [ID: 1] (2/5) Boeing 717 is landing at Runway 2 in 10seconds
+15:51:44 - [ID: 1] (3/5) Boeing 717 finished landing at Runway 2 and is parked in the airport for 6seconds
+15:51:50 - [ID: 1] (4/5) Boeing 717 is taking off from Runway 1 to Jakarta in 7seconds
+15:51:57 - [ID: 1] (5/5) Boeing 717 has flown off from Runway 1 to Jakarta
 
-13:57:28 - [ID: 1] (1/5) Airbus A350 created and is waiting for depature to Toronto
-13:57:28 - [ID: 1] (4/5) Airbus A350 is taking off from Runway 3 to Toronto in 8seconds
-13:57:36 - [ID: 1] (5/5) Airbus A350 has flown off from Runway 3 to Toronto
+15:51:34 - Creating an Aircraft in 5 seconds
+15:51:39 - [ID: 2] (1/5) Airbus A350 created and is waiting for depature to Melbourne
+15:51:39 - [ID: 2] (4/5) Airbus A350 is taking off from Runway 3 to Melbourne in 9seconds
+15:51:48 - [ID: 2] (5/5) Airbus A350 has flown off from Runway 3 to Melbourne
 
-13:57:32 - [ID: 2] (1/5) Airbus A350 created and is waiting for depature to Malé
-13:57:32 - [ID: 2] (4/5) Airbus A350 is taking off from Runway 2 to Malé in 8seconds
-13:57:40 - [ID: 2] (5/5) Airbus A350 has flown off from Runway 2 to Malé
+15:51:58 - Runway 1 [Arrivals:  0 | Departures:  1]
+15:51:58 - Runway 2 [Arrivals:  1 | Departures:  0]
+15:51:58 - Runway 3 [Arrivals:  0 | Departures:  1]
 
-13:57:36 - [ID: 3] (1/5) Boeing 787 created and is waiting for depature to Bangkok
-13:57:36 - [ID: 3] (4/5) Boeing 787 is taking off from Runway 1 to Bangkok in 7seconds
-13:57:43 - [ID: 3] (5/5) Boeing 787 has flown off from Runway 1 to Bangkok
+Total Arrivals: 1
+Total Departures: 2
 
-13:57:40 - [ID: 4] (1/5) Boeing 717 created and is waiting for depature to New Delhi
-13:57:41 - [ID: 4] (4/5) Boeing 717 is taking off from Runway 3 to New Delhi in 8seconds
-13:57:49 - [ID: 4] (5/5) Boeing 717 has flown off from Runway 3 to New Delhi
-
-13:57:44 - [ID: 5] (1/5) Boeing 787 created and is waiting for depature to Singapore
-13:57:44 - [ID: 5] (4/5) Boeing 787 is taking off from Runway 2 to Singapore in 8seconds
-13:57:52 - [ID: 5] (5/5) Boeing 787 has flown off from Runway 2 to Singapore
-
-13:57:48 - [ID: 6] (1/5) Boeing 787 created and is waiting for depature to Colombo
-13:57:48 - [ID: 6] (4/5) Boeing 787 is taking off from Runway 1 to Colombo in 7seconds
-13:57:55 - [ID: 6] (5/5) Boeing 787 has flown off from Runway 1 to Colombo
-
-13:57:52 - [ID: 7] (1/5) Airbus A350 created and is waiting for depature to Malé
-13:57:53 - [ID: 7] (4/5) Airbus A350 is taking off from Runway 3 to Malé in 9seconds
-13:58:02 - [ID: 7] (5/5) Airbus A350 has flown off from Runway 3 to Malé
-
-13:58:04 - Runway 1 [Arrivals: 0 | Departures: 2]
-13:58:04 - Runway 2 [Arrivals: 0 | Departures: 3]
-13:58:04 - Runway 3 [Arrivals: 0 | Departures: 3]
-
-Total Arrivals: 0
-Total Departures: 8
+End Time: 15:51:36

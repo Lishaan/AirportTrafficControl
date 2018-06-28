@@ -1,0 +1,114 @@
+Start time: 14:24:00
+Duration: 120 seconds
+
+14:24:00 - Creating an Aircraft in 4 seconds
+14:24:04 - [ID: 1] (1/5) Boeing 787 created and is waiting for depature to Plaisance
+14:24:04 - [ID: 1] (4/5) Boeing 787 is taking off from Runway 2 to Plaisance in 6seconds
+14:24:10 - [ID: 1] (5/5) Boeing 787 has flown off from Runway 2 to Plaisance
+
+14:24:04 - Creating an Aircraft in 4 seconds
+14:24:08 - [ID: 2] (1/5) Boeing 717 created and is waiting for depature to Beijing
+14:24:08 - [ID: 2] (4/5) Boeing 717 is taking off from Runway 3 to Beijing in 9seconds
+14:24:17 - [ID: 2] (5/5) Boeing 717 has flown off from Runway 3 to Beijing
+
+14:24:08 - Creating an Aircraft in 4 seconds
+14:24:12 - [ID: 3] (1/5) Airbus A380 created and is arriving soon from Toronto
+14:24:12 - [ID: 3] (2/5) Airbus A380 is landing at Runway 2 in 10seconds
+14:24:22 - [ID: 3] (3/5) Airbus A380 finished landing at Runway 2 and is parked in the airport for 9seconds
+14:24:32 - [ID: 3] (4/5) Airbus A380 is taking off from Runway 3 to Toronto in 8seconds
+14:24:40 - [ID: 3] (5/5) Airbus A380 has flown off from Runway 3 to Toronto
+
+14:24:12 - Creating an Aircraft in 4 seconds
+14:24:16 - [ID: 4] (1/5) Airbus A380 created and is waiting for depature to Colombo
+14:24:16 - [ID: 4] (4/5) Airbus A380 is taking off from Runway 1 to Colombo in 8seconds
+14:24:24 - [ID: 4] (5/5) Airbus A380 has flown off from Runway 1 to Colombo
+
+14:24:16 - Creating an Aircraft in 4 seconds
+14:24:20 - [ID: 5] (1/5) Airbus A350 created and is waiting for depature to Beijing
+14:24:20 - [ID: 5] (4/5) Airbus A350 is taking off from Runway 3 to Beijing in 7seconds
+14:24:27 - [ID: 5] (5/5) Airbus A350 has flown off from Runway 3 to Beijing
+
+14:24:20 - Creating an Aircraft in 4 seconds
+14:24:24 - [ID: 6] (1/5) Airbus A350 created and is waiting for depature to Colombo
+14:24:25 - [ID: 6] (4/5) Airbus A350 is taking off from Runway 2 to Colombo in 8seconds
+14:24:33 - [ID: 6] (5/5) Airbus A350 has flown off from Runway 2 to Colombo
+
+14:24:24 - Creating an Aircraft in 4 seconds
+14:24:28 - [ID: 7] (1/5) Airbus A380 created and is waiting for depature to Singapore
+14:24:28 - [ID: 7] (4/5) Airbus A380 is taking off from Runway 1 to Singapore in 8seconds
+14:24:36 - [ID: 7] (5/5) Airbus A380 has flown off from Runway 1 to Singapore
+
+14:24:28 - Creating an Aircraft in 4 seconds
+14:24:32 - [ID: 8] (1/5) Airbus A380 created and is arriving soon from Hanoi
+14:24:34 - [ID: 8] (2/5) Airbus A380 is landing at Runway 2 in 10seconds
+14:24:44 - [ID: 8] (3/5) Airbus A380 finished landing at Runway 2 and is parked in the airport for 13seconds
+14:24:59 - [ID: 8] (4/5) Airbus A380 is taking off from Runway 1 to Hanoi in 6seconds
+14:25:05 - [ID: 8] (5/5) Airbus A380 has flown off from Runway 1 to Hanoi
+
+14:24:32 - Creating an Aircraft in 4 seconds
+14:24:36 - [ID: 9] (1/5) Airbus A350 created and is waiting for depature to Singapore
+14:24:37 - [ID: 9] (4/5) Airbus A350 is taking off from Runway 1 to Singapore in 6seconds
+14:24:43 - [ID: 9] (5/5) Airbus A350 has flown off from Runway 1 to Singapore
+
+14:24:36 - Creating an Aircraft in 4 seconds
+14:24:40 - [ID: 10] (1/5) Boeing 717 created and is waiting for depature to Plaisance
+14:24:41 - [ID: 10] (4/5) Boeing 717 is taking off from Runway 3 to Plaisance in 5seconds
+14:24:46 - [ID: 10] (5/5) Boeing 717 has flown off from Runway 3 to Plaisance
+
+14:24:40 - Creating an Aircraft in 4 seconds
+14:24:44 - [ID: 11] (1/5) Airbus A380 created and is waiting for depature to Malé
+14:24:45 - [ID: 11] (4/5) Airbus A380 is taking off from Runway 2 to Malé in 5seconds
+14:24:50 - [ID: 11] (5/5) Airbus A380 has flown off from Runway 2 to Malé
+
+14:24:44 - Creating an Aircraft in 4 seconds
+14:24:48 - [ID: 12] (1/5) Airbus A380 created and is arriving soon from Toronto
+14:24:48 - [ID: 12] (2/5) Airbus A380 is landing at Runway 1 in 10seconds
+14:24:58 - [ID: 12] (3/5) Airbus A380 finished landing at Runway 1 and is parked in the airport for 11seconds
+14:25:11 - [ID: 12] (4/5) Airbus A380 is taking off from Runway 3 to Toronto in 8seconds
+14:25:19 - [ID: 12] (5/5) Airbus A380 has flown off from Runway 3 to Toronto
+
+14:24:48 - Creating an Aircraft in 4 seconds
+14:24:52 - [ID: 13] (1/5) Boeing 787 created and is waiting for depature to Beijing
+14:24:52 - [ID: 13] (4/5) Boeing 787 is taking off from Runway 3 to Beijing in 6seconds
+14:24:58 - [ID: 13] (5/5) Boeing 787 has flown off from Runway 3 to Beijing
+
+14:24:52 - Creating an Aircraft in 4 seconds
+14:24:56 - [ID: 14] (1/5) Boeing 717 created and is arriving soon from Malé
+14:24:57 - [ID: 14] (2/5) Boeing 717 is landing at Runway 2 in 10seconds
+14:25:07 - [ID: 14] (3/5) Boeing 717 finished landing at Runway 2 and is parked in the airport for 11seconds
+14:25:19 - [ID: 14] (4/5) Boeing 717 is taking off from Runway 2 to Malé in 9seconds
+14:25:28 - [ID: 14] (5/5) Boeing 717 has flown off from Runway 2 to Malé
+
+14:24:56 - Creating an Aircraft in 4 seconds
+14:25:00 - [ID: 15] (1/5) Boeing 717 created and is arriving soon from Colombo
+14:25:00 - [ID: 15] (2/5) Boeing 717 is landing at Runway 3 in 10seconds
+14:25:10 - [ID: 15] (3/5) Boeing 717 finished landing at Runway 3 and is parked in the airport for 12seconds
+14:25:23 - [ID: 15] (4/5) Boeing 717 is taking off from Runway 3 to Colombo in 8seconds
+14:25:31 - [ID: 15] (5/5) Boeing 717 has flown off from Runway 3 to Colombo
+
+14:25:00 - Creating an Aircraft in 4 seconds
+14:25:04 - [ID: 16] (1/5) Airbus A380 created and is waiting for depature to Jakarta
+14:25:06 - [ID: 16] (4/5) Airbus A380 is taking off from Runway 1 to Jakarta in 5seconds
+14:25:11 - [ID: 16] (5/5) Airbus A380 has flown off from Runway 1 to Jakarta
+
+14:25:04 - Creating an Aircraft in 4 seconds
+14:25:08 - [ID: 17] (1/5) Airbus A350 created and is waiting for depature to Tokyo
+14:25:09 - [ID: 17] (4/5) Airbus A350 is taking off from Runway 2 to Tokyo in 9seconds
+14:25:18 - [ID: 17] (5/5) Airbus A350 has flown off from Runway 2 to Tokyo
+
+14:25:08 - Creating an Aircraft in 4 seconds
+14:25:12 - [ID: 18] (1/5) Boeing 717 created and is arriving soon from Jakarta
+14:25:13 - [ID: 18] (2/5) Boeing 717 is landing at Runway 1 in 10seconds
+14:25:23 - [ID: 18] (3/5) Boeing 717 finished landing at Runway 1 and is parked in the airport for 11seconds
+14:25:34 - [ID: 18] (4/5) Boeing 717 is taking off from Runway 1 to Jakarta in 8seconds
+14:25:42 - [ID: 18] (5/5) Boeing 717 has flown off from Runway 1 to Jakarta
+
+14:25:12 - Creating an Aircraft in 4 seconds
+14:25:16 - [ID: 19] (1/5) Airbus A380 created and is waiting for depature to Jakarta
+
+14:26:02 - Runway 1 [Arrivals: 2 | Departures: 6]
+14:26:02 - Runway 2 [Arrivals: 3 | Departures: 5]
+14:26:02 - Runway 3 [Arrivals: 1 | Departures: 7]
+
+Total Arrivals: 6
+Total Departures: 18

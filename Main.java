@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
 	public static void main(String[] args) throws InterruptedException {
@@ -9,27 +10,29 @@ public class Main {
 		final long duration = (new java.util.Scanner(System.in).nextLong()) * 1000;
 
 		Util.initLogFile(duration);
-		final int logsCount = 10;
+		final int logsCount = 5;
 		
 		final long startTime = System.currentTimeMillis();
 		final long endTime = startTime + duration;
 
-		Container<Aircraft> aircraftContainer = new Container<Aircraft>(Airport.CAPACITY);
-		Spawner aircraftSpawner = new Spawner(aircraftContainer);
-		Runway[] runways = new Runway[] {
+		final Container<Aircraft> aircraftContainer = new Container<Aircraft>(Airport.CAPACITY);
+		final Spawner aircraftSpawner = new Spawner(aircraftContainer);
+		final Runway[] runways = new Runway[] {
 			new Runway(aircraftContainer),
 			new Runway(aircraftContainer),
 			new Runway(aircraftContainer)
 		};
 
-		Thread spawnerThread = new Thread(aircraftSpawner);
-		ExecutorService runwayExecutor = Executors.newFixedThreadPool(runways.length);
+		final Thread spawnerThread = new Thread(aircraftSpawner);
+		final ExecutorService runwayExecutor = Executors.newFixedThreadPool(runways.length);
 
-		spawnerThread.start();
 
 		for (Runway runway : runways) {
 			runwayExecutor.execute(runway);
 		}
+		
+		// runwayExecutor.execute(aircraftSpawner);
+		spawnerThread.start();
 
 		// Display Thread
 		boolean ended = false;
@@ -37,14 +40,13 @@ public class Main {
 		do {
 			Util.clearScreen();
 			Util.printCurrentTime(startTime, duration);
-			synchronized(aircraftContainer) {
-				Util.printAircraftStatuses(aircraftContainer.getArrayList());
-			}
+			Util.printAircraftStatuses(aircraftContainer.getArrayList());
 			Util.printRunwayStatuses(runways);
 			Util.printLogs(logsCount);
 
-			if (!(System.currentTimeMillis() <= endTime)){
+			if (!(System.currentTimeMillis() <= endTime)) {
 				aircraftSpawner.stop();
+				System.out.println(String.format("Aircraft Spawner has stopped spawning aircrafts... (at %s)\n", aircraftSpawner.getEndTime()));
 			}
 
 			ended = !(System.currentTimeMillis() <= endTime) && (aircraftContainer.isEmpty());
@@ -54,11 +56,12 @@ public class Main {
 		} while (!ended);
 
 		runwayExecutor.shutdown();
+		spawnerThread.join();
 
 		while (!runwayExecutor.isTerminated()) {
 			if (ended) {
 				Util.writeToLogsSorted();
-				Util.printRunwayStats(runways);
+				Util.printRunwayStats(runways, endTime);
 				break;
 			}
 		}

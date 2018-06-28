@@ -29,6 +29,6 @@ public class Airport {
 		String name = AIRCRAFT_NAMES[new java.util.Random().nextInt(AIRCRAFT_NAMES.length)];
 		String destination = LOCATIONS[new java.util.Random().nextInt(LOCATIONS.length)];
 
-		return new Aircraft(name, destination);
+		return new Aircraft(name, destination, true);
 	}
 }
