@@ -3,15 +3,19 @@ import java.util.ArrayList;
 class Util {
 	private static java.io.File logFile = new java.io.File("log.txt");
 	private static ArrayList<Log> logs = new ArrayList<Log>();
+
+	public static int getRandomInt(int min, int max) {
+		return new java.util.Random().nextInt((max - min) + 1) + min;
+	}
 	
-	public static void initLogFile(final long duration) {
+	public static void initLogFile() {
 		try {
 			logFile = new java.io.File("log.txt");
 			java.io.PrintWriter writer = new java.io.PrintWriter(logFile);
 
 			String startTime = Util.formatTime(System.currentTimeMillis());
 
-			String initString = String.format("Start time: %s\nDuration: %d seconds\n\n", startTime, duration/1000);
+			String initString = String.format("Start time: %s\n\n", startTime);
 
 			writer.print(initString);
 			writer.close();
@@ -72,32 +76,28 @@ class Util {
 		}
 	}
 
-	public static void printCurrentTime(long startTime, long duration) {
+	public static void printCurrentTime(long startTime, int remainingAircrafts) {
 		long currentTime = System.currentTimeMillis();
-		long endTime = startTime+duration;
-		long remainingTime = startTime-currentTime + duration;
 
-		boolean timeUp = System.currentTimeMillis() >= endTime;
-
-		System.out.format("Start Time: %s\nCurrent Time: %s\nEnd Time: %s\n\nRemaining: %s\n", 
+		System.out.format("Start Time: %s\nCurrent Time: %s\n\nRemaining Aircrafts: %d\n", 
 			Util.formatTime(startTime),
 			Util.formatTime(currentTime), 
-			Util.formatTime(endTime),
-			timeUp ? "waiting for aircrafts to clear" : Util.formatTime(remainingTime, true));
+			remainingAircrafts
+		);
 
 		System.out.println();
 	}
 
 	public static void printAircraftStatuses(ArrayList<Aircraft> aircrafts) {
 		System.out.println("Arrivals & Departures");
-		System.out.format("+ -- + ------------- + ---------------- + ------ +\n");
-		System.out.format("| %-2s | %-13s | %-16s | %-6s |\n", "ID", "AIRCRAFT NAME", "DESTINATION CITY", "STATUS");
-		System.out.format("+ -- + ------------- + ---------------- + ------ +\n");
+		System.out.format("+ -- + ------------- + ---------------- + ------ + ----- +\n");
+		System.out.format("| %-2s | %-13s | %-16s | %-6s | %-5s |\n", "ID", "AIRCRAFT NAME", "DESTINATION CITY", "STATUS", "STAGE");
+		System.out.format("+ -- + ------------- + ---------------- + ------ + ----- +\n");
 		for (Aircraft a : aircrafts)
-			System.out.format("| %2s | %-13s | %-16s | %-6s |\n", a.getID(), a.getName(), a.getDestination(), a.getStatus());
+			System.out.format("| %-2s | %-13s | %-16s | %-6s |   %-1s   |\n", a.getID(), a.getName(), a.getDestination(), a.getStatus(), a.getStage());
 		for (int i = 0; i < Airport.CAPACITY-aircrafts.size(); i++)
-			System.out.format("| %2s | %-13s | %-16s | %-6s |\n", "", "", "", "");
-		System.out.format("+ -- + ------------- + ---------------- + ------ +\n");
+			System.out.format("| %-2s | %-13s | %-16s | %-6s | %-5s |\n", "", "", "", "", "");
+		System.out.format("+ -- + ------------- + ---------------- + ------ + ----- +\n");
 
 		System.out.println();
 	}
@@ -126,35 +126,43 @@ class Util {
 		System.out.println();
 	}
 
-	public static void printRunwayStats(Runway[] runways, long endTime) {
-		String r1out = String.format("Runway 1 [Arrivals: %2d | Departures: %2d]", 
-			runways[0].getArrivalCount(), 
-			runways[0].getDepartureCount());
-		String r2out = String.format("Runway 2 [Arrivals: %2d | Departures: %2d]", 
-			runways[1].getArrivalCount(), 
-			runways[1].getDepartureCount());
-		String r3out = String.format("Runway 3 [Arrivals: %2d | Departures: %2d]", 
-			runways[2].getArrivalCount(), 
-			runways[2].getDepartureCount());
-
-		int total_a = runways[0].getArrivalCount() + runways[1].getArrivalCount() + runways[2].getArrivalCount();
-		int total_d = runways[0].getDepartureCount() + runways[1].getDepartureCount() + runways[2].getDepartureCount();
-
-		String total_out = String.format("\nTotal Arrivals: %d\nTotal Departures: %d", total_a, total_d);
-		String endTime_out = "\nEnd Time: " + Util.formatTime(endTime, false);
-
-		writeToLogFile(new Log(r1out, 0));
-		writeToLogFile(new Log(r2out, 0));
-		writeToLogFile(new Log(r3out, 0));
-		writeToLogFile(total_out);
-		writeToLogFile(endTime_out);
+	public static void printRunwayStats(Runway[] runways, long startTime, int aircraftsProcessed) {
+		long endTime = System.currentTimeMillis();
 
 		System.out.println("End\n");
-		System.out.println(r1out);
-		System.out.println(r2out);
-		System.out.println(r3out);
+		System.out.println("Runway Stats");
+		writeToLogFile("Runway Stats");
+		
+		int total_a = 0;
+		int total_d = 0;
+
+		for (Runway runway : runways) {
+			String runway_out = String.format("- %s [Arrivals: %2d | Departures: %2d]",
+			runway.getName(),
+			runway.getArrivalCount(), 
+			runway.getDepartureCount());
+
+			total_a += runway.getArrivalCount();
+			total_d += runway.getDepartureCount();
+
+			writeToLogFile(runway_out);
+			System.out.println(runway_out);
+		}
+
+		String total_out = String.format("\nTotal Arrivals: %d\nTotal Departures: %d", total_a, total_d);
+		String endTime_out = "\nEnd Time: " + Util.formatTime(endTime);
+		String timeTaken_out = "Time Taken: " + Util.formatTime(endTime-startTime, true);
+		String aircraftsProcessed_out = "Aircrafts Processed: " + aircraftsProcessed;
+
+		writeToLogFile(total_out);
+		writeToLogFile(endTime_out);
+		writeToLogFile(timeTaken_out);
+		writeToLogFile(aircraftsProcessed_out);
+
 		System.out.println(total_out);
 		System.out.println(endTime_out);
+		System.out.println(timeTaken_out);
+		System.out.println(aircraftsProcessed_out);
 	}
 	
 	public static void clearScreen() {

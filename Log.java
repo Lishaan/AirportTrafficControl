@@ -1,7 +1,7 @@
 public class Log {
 	private final int aircraftID;
+	private final long timeCreated;
 	private final String message;
-	private final Long timeCreated;
 
 	public Log(String msg, int ID) {
 		aircraftID = ID;

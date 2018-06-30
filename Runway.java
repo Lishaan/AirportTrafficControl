@@ -1,6 +1,3 @@
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Condition;
-
 public class Runway implements Runnable {
 	private static int ID_INC = 1;
 
@@ -10,13 +7,15 @@ public class Runway implements Runnable {
 
 	private volatile boolean run;
 
+	private boolean shouldTakeoff = true;
+
 	private final int ID;
 	private volatile String status;
 	private volatile String currentAircraft;
 	private volatile int departureCount;
 	private volatile int arrivalCount;
 
-	private volatile Container<Aircraft> aircraftContainer;
+	private final Container<Aircraft> aircraftContainer;
 
 	public Runway(Container<Aircraft> aircraftContainer) {
 		this.run = true;
@@ -31,109 +30,130 @@ public class Runway implements Runnable {
 	}
 
 	public @Override void run() {
-		boolean checkForNext = true;
 		while (run) {
-			Aircraft aircraft = new Aircraft();
+			this.shouldTakeoff = true;
 
-			synchronized(aircraftContainer) {
-				while (aircraftContainer.isEmpty()) {
-					try {
-						aircraftContainer.wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				
-				aircraft = aircraftContainer.getArrayList().get(0);
+			final Aircraft aircraft = fetchAircraft();
 
-				if (aircraft.isRunway() || aircraft.isParked() || !checkForNext) {
-					for (Aircraft a : aircraftContainer.getArrayList()) {
-						if (!(a.isRunway()) && (aircraft.getID() != a.getID()) && !(a.isParked())) {
-							aircraft = a;
-							break;
-						}
-					}
-				}
-			}
-
-			checkForNext = true;
-
-			// If the plane is flying and ready to land
-			synchronized(aircraft) {
-				if (aircraft.isFlying()) {
-					aircraft.setAtRunway();
-					this.arrivalCount++;
-
-					// Landing (Arrivals)
-					Util.addLog(String.format("[ID: %d] (2/5) %s is landing at Runway %d in 10seconds", aircraft.getID(), aircraft.getName(), this.getID()), aircraft.getID());
-
-					this.currentAircraft = aircraft.toString();
-					this.status = Runway.STATUS_LANDING;
-					
-					try {
-						aircraft.wait(10*1000);
-						aircraft.notifyAll();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					
-					this.status = Runway.STATUS_FREE;
-					this.currentAircraft = "None";
-					
-					aircraft.unsetAtRunway();
-					aircraft.switchStatus();
-
-					// Parking 
-					final int parkTime = (new java.util.Random().nextInt(10) + 5) * 1000;
-					Util.addLog(String.format("[ID: %d] (3/5) %s finished landing at Runway %d and is parked in the airport for %dseconds", aircraft.getID(), aircraft.getName(), this.getID(), parkTime/1000), aircraft.getID());
-					aircraft.park(System.currentTimeMillis(), parkTime);
-
-					checkForNext = false;
-				}
-			}
-
-			// If the plane is landed and ready to takeoff
-			synchronized(aircraft) {
-				if (aircraft.isLanded() && checkForNext) {
-					aircraft.setAtRunway();
-					this.departureCount++;
-
-					// Takeoff (Departure)
-					final int takeOffTime = new java.util.Random().nextInt(5) + 5;
-					Util.addLog(String.format("[ID: %d] (4/5) %s is taking off from Runway %d to %s in %dseconds", aircraft.getID(), aircraft.getName(), this.getID(), aircraft.getDestination(), takeOffTime), aircraft.getID());
-					this.currentAircraft = aircraft.toString();
-					this.status = Runway.STATUS_TAKEOFF;
-					try {
-						aircraft.wait(takeOffTime*1000);
-						aircraft.notifyAll();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					this.status = Runway.STATUS_FREE;
-					this.currentAircraft = "None";
-
-					// removing the aircraft from aircraftContainer
-					for (int i = 0; i < aircraftContainer.getArrayList().size(); i++) {
-						if (aircraftContainer.getArrayList().get(i).getID() == aircraft.getID()) {
-							aircraftContainer.remove(i);
-							Util.addLog(String.format("[ID: %d] (5/5) %s has flown off from Runway %d to %s", aircraft.getID(), aircraft.getName(), this.getID(), aircraft.getDestination()), aircraft.getID());
-							break;
-						}
-					}
-				}
-			}
-
-			synchronized(aircraftContainer) {
-				for (Aircraft a : aircraftContainer.getArrayList()) {
-					a.checkParking();
-				}
-			}
+			landing(aircraft);
+			takeoff(aircraft);
 
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public Aircraft fetchAircraft() {
+		Aircraft aircraft = new Aircraft();
+
+		synchronized(aircraftContainer) {
+			while (aircraftContainer.isEmpty()) {
+				try {
+					aircraftContainer.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			aircraft = aircraftContainer.getArrayList().get(0);
+
+			if (aircraft.isRunway() || aircraft.isParked() || !shouldTakeoff) {
+				for (Aircraft a : aircraftContainer.getArrayList()) {
+					if (!(a.isRunway()) && (aircraft.getID() != a.getID()) && !(a.isParked())) {
+						aircraft = a;
+						break;
+					}
+				}
+			}
+		}
+
+		return aircraft;
+	}
+
+	public void landing(Aircraft aircraft) {
+
+		// If the plane is flying and ready to land
+		synchronized(aircraft) {
+			if (aircraft.isFlying()) {
+				aircraft.setAtRunway();
+				this.arrivalCount++;
+
+				// Landing (Arrivals)
+				aircraft.setStage(2);
+				Util.addLog(String.format("[ID: %d] (2/5) %s is landing at Runway %d in 10seconds", aircraft.getID(), aircraft.getName(), this.getID()), aircraft.getID());
+
+				this.currentAircraft = aircraft.toString();
+				this.status = Runway.STATUS_LANDING;
+				
+				try {
+					aircraft.wait(10*1000);
+					aircraft.notifyAll();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				this.status = Runway.STATUS_FREE;
+				this.currentAircraft = "None";
+				
+				aircraft.unsetAtRunway();
+				aircraft.switchStatus();
+
+				// Parking
+				aircraft.setStage(3);
+				final int parkTime = Util.getRandomInt(5, 10);
+				Util.addLog(String.format("[ID: %d] (3/5) %s finished landing at Runway %d and is parked in the airport for %dseconds", aircraft.getID(), aircraft.getName(), this.getID(), parkTime), aircraft.getID());
+				aircraft.park(parkTime*1000);
+
+				this.shouldTakeoff = false;
+			}
+		}
+	}
+
+	public void takeoff(Aircraft aircraft) {
+		boolean shouldRemove = false;
+
+		// If the plane is landed and ready to takeoff
+		synchronized(aircraft) {
+			if (aircraft.isLanded() && shouldTakeoff) {
+				aircraft.setAtRunway();
+				this.departureCount++;
+
+				// Takeoff (Departure)
+				aircraft.setStage(4);
+				final int takeOffTime = Util.getRandomInt(5, 10);
+				Util.addLog(String.format("[ID: %d] (4/5) %s is taking off from Runway %d to %s in %dseconds", aircraft.getID(), aircraft.getName(), this.getID(), aircraft.getDestination(), takeOffTime), aircraft.getID());
+				this.currentAircraft = aircraft.toString();
+				this.status = Runway.STATUS_TAKEOFF;
+				try {
+					aircraft.wait(takeOffTime*1000);
+					aircraft.notifyAll();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.status = Runway.STATUS_FREE;
+				this.currentAircraft = "None";
+
+				shouldRemove = true;
+			}
+		}
+		
+		// removing the aircraft from aircraftContainer
+		if (shouldRemove) {
+			for (int i = 0; i < aircraftContainer.getArrayList().size(); i++) {
+				if (aircraftContainer.getArrayList().get(i).getID() == aircraft.getID()) {
+					aircraftContainer.remove(i);
+					Util.addLog(String.format("[ID: %d] (5/5) %s has flown off from Runway %d to %s", aircraft.getID(), aircraft.getName(), this.getID(), aircraft.getDestination()), aircraft.getID());
+					break;
+				}
+			}
+		}
+
+		// Checks for parking 
+		for (Aircraft a : aircraftContainer.getArrayList()) {
+			a.checkParking();
 		}
 	}
 

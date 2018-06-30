@@ -1,67 +1,82 @@
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
 	public static void main(String[] args) throws InterruptedException {
 		Util.clearScreen();
-		System.out.print("Enter simulation time (seconds): ");
-		final long duration = (new java.util.Scanner(System.in).nextLong()) * 1000;
+		System.out.println("Welcome to Airport Traffic Control v1.0");
+		System.out.print("Enter the number of aircrafts to spawn: ");
+		final int aircraftsToSpawn = (new java.util.Scanner(System.in).nextInt());
+		int aircraftsRemaining = aircraftsToSpawn;
 
-		Util.initLogFile(duration);
-		final int logsCount = 5;
-		
-		final long startTime = System.currentTimeMillis();
-		final long endTime = startTime + duration;
+		Util.initLogFile();
+		System.out.print("Enter the number of logs to display: ");
+		final int logsCount = (new java.util.Scanner(System.in).nextInt());
 
 		final Container<Aircraft> aircraftContainer = new Container<Aircraft>(Airport.CAPACITY);
-		final Spawner aircraftSpawner = new Spawner(aircraftContainer);
 		final Runway[] runways = new Runway[] {
 			new Runway(aircraftContainer),
 			new Runway(aircraftContainer),
 			new Runway(aircraftContainer)
 		};
 
-		final Thread spawnerThread = new Thread(aircraftSpawner);
 		final ExecutorService runwayExecutor = Executors.newFixedThreadPool(runways.length);
-
 
 		for (Runway runway : runways) {
 			runwayExecutor.execute(runway);
 		}
-		
-		// runwayExecutor.execute(aircraftSpawner);
-		spawnerThread.start();
 
-		// Display Thread
+		final long startTime = System.currentTimeMillis();
+		int spawnTime = 0;
+		boolean spawning = false;
 		boolean ended = false;
-
+		
+		// Main Thread: Displaying & Spawning aircrafts
 		do {
+			// Display
 			Util.clearScreen();
-			Util.printCurrentTime(startTime, duration);
+			Util.printCurrentTime(startTime, aircraftsRemaining);
 			Util.printAircraftStatuses(aircraftContainer.getArrayList());
 			Util.printRunwayStatuses(runways);
 			Util.printLogs(logsCount);
 
-			if (!(System.currentTimeMillis() <= endTime)) {
-				aircraftSpawner.stop();
-				System.out.println(String.format("Aircraft Spawner has stopped spawning aircrafts... (at %s)\n", aircraftSpawner.getEndTime()));
+			// Spawn Aircraft
+			if (!aircraftContainer.isFull() && aircraftsRemaining > 0) {
+				if (!spawning) {
+					spawnTime = Util.getRandomInt(4, 8);
+					Util.addLog(String.format("Creating an Aircraft in %d seconds", spawnTime), 0);
+					spawning = true;
+				}
+
+				if (spawnTime == 0) {
+					aircraftContainer.add(Airport.newAircraft());
+					aircraftsRemaining -= 1;
+					spawning = false;
+				}
 			}
 
-			ended = !(System.currentTimeMillis() <= endTime) && (aircraftContainer.isEmpty());
+			if (aircraftsRemaining <= 0) {
+				System.out.println("Waiting for aircrafts to clear\n");
+			}
+			
+			// Ending Condition
+			ended = (aircraftContainer.isEmpty()) && (aircraftsRemaining <= 0);
 
 			Thread.sleep(1000);
+
+			if (!aircraftContainer.isFull()) {
+				spawnTime -= 1;
+			}
 
 		} while (!ended);
 
 		runwayExecutor.shutdown();
-		spawnerThread.join();
 
 		while (!runwayExecutor.isTerminated()) {
 			if (ended) {
 				Util.writeToLogsSorted();
-				Util.printRunwayStats(runways, endTime);
+				Util.printRunwayStats(runways, startTime, aircraftsToSpawn);
 				break;
 			}
 		}

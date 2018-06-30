@@ -32,4 +32,8 @@ public class Container<T> {
 	public synchronized boolean isEmpty() {
 		return items.size() <= 0;
 	}
+
+	public synchronized boolean isFull() {
+		return items.size() >= size;
+	}
 }

@@ -8,6 +8,8 @@ public class Aircraft {
 	private final int ID;
 	private final String name;
 	private final String destination;
+
+	private int stage;
 	
 	private volatile String status; // Flying -> Runway -> Parked -> Landed -> Runway
 	private volatile String prevStatus;
@@ -22,11 +24,12 @@ public class Aircraft {
 		this.name = name;
 		this.destination = destination;
 
-		status = (new java.util.Random().nextInt(100) > 50) ? STATUS_FLYING : STATUS_LANDED;
+		status = (Util.getRandomInt(0, 100) > 50) ? STATUS_FLYING : STATUS_LANDED;
 		prevStatus = null;
 
 		if (addLog) {
 			this.ID = Aircraft.ID_INC++;
+			stage = 1;
 
 			if (isLanded()) {
 				Util.addLog(String.format("[ID: %d] (1/5) %s created and is waiting for depature to %s", ID, name, destination), ID);
@@ -59,9 +62,9 @@ public class Aircraft {
 		}
 	}
 
-	public synchronized void park(long parkedTime, long wait) {
+	public synchronized void park(long parkTime) {
 		setParked();
-		releaseTime = parkedTime + wait;
+		releaseTime = System.currentTimeMillis() + parkTime;
 	}
 
 	public synchronized void checkParking() {
@@ -90,12 +93,15 @@ public class Aircraft {
 		return String.format("%s [ID: %d]", getName(), getID());
 	}
 
+	public synchronized void setStage(int newStage) { stage = newStage; } 
+
 	public synchronized boolean isFlying() { return status.equals(STATUS_FLYING); }
 	public synchronized boolean isLanded() { return status.equals(STATUS_LANDED); }
 	public synchronized boolean isRunway() { return status.equals(STATUS_RUNWAY); }
 	public synchronized boolean isParked() { return status.equals(STATUS_PARKED); }
 
 	public synchronized int getID() { return ID; }
+	public synchronized int getStage() { return stage; }
 	public synchronized String getName() { return name; }
 	public synchronized String getStatus() { return status; }
 	public synchronized String getDestination() { return destination; }
