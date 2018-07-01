@@ -3,7 +3,7 @@ public class Runway implements Runnable {
 
 	private static final String STATUS_TAKEOFF = "Takeoff";
 	private static final String STATUS_LANDING = "Landing";
-	private static final String STATUS_FREE = "FREE";
+	private static final String STATUS_FREE = "Free";
 
 	private volatile boolean run;
 
@@ -115,17 +115,30 @@ public class Runway implements Runnable {
 
 	private void takeoff(Aircraft aircraft) {
 		boolean shouldRemove = false;
+		final int extraTakeOffTime;
+		final boolean isTakingOff = getTakingOff();
 
-		// If the plane is landed and ready to takeoff
+		// if there's no other aircraft that is going to take off, the aircraft can take longer duration to take off.
+		if (!isTakingOff) {
+			extraTakeOffTime = Util.getRandomInt(2, 5);
+		} else {
+			extraTakeOffTime = 0;
+		}
+
 		synchronized(aircraft) {
-			if (aircraft.isLanded() && shouldTakeoff) {
+			if (aircraft.isLanded() && this.shouldTakeoff) {
 				aircraft.setAtRunway();
 				this.departureCount++;
 
 				// Takeoff (Departure)
 				aircraft.setStage(4);
-				final int takeOffTime = Util.getRandomInt(5, 10);
-				Util.addLog(String.format("[ID: %d] (4/5) %s is taking off from Runway %d to %s in %dseconds", aircraft.getID(), aircraft.getName(), this.getID(), aircraft.getDestination(), takeOffTime), aircraft.getID());
+				final int takeOffTime = Util.getRandomInt(5, 10) + extraTakeOffTime;
+				Util.addLog(
+					String.format("[ID: %d] (4/5) %s is taking off from Runway %d to %s in %dseconds %s", 
+						aircraft.getID(), aircraft.getName(), this.getID(), aircraft.getDestination(), takeOffTime, 
+						(!isTakingOff) ? String.format("(extra %dseconds)", extraTakeOffTime) : ""
+					), aircraft.getID()
+				);
 				this.currentAircraft = aircraft.toString();
 				this.status = Runway.STATUS_TAKEOFF;
 				try {
@@ -166,4 +179,14 @@ public class Runway implements Runnable {
 	public String getCurrentAircraft() { return currentAircraft; }
 	public int getDepartureCount() { return departureCount; }
 	public int getArrivalCount() { return arrivalCount; }
+
+	private boolean getTakingOff() {
+		for (Aircraft aircraft : aircraftContainer.getArrayList()) {
+			if (aircraft.isTakingOff()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

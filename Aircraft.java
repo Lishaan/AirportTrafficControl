@@ -16,16 +16,14 @@ public class Aircraft {
 
 	private long releaseTime = -1;
 
-	public Aircraft() {
-		this("Null", "Null", false);
-	}
+	public Aircraft() { this("Null", "Null", false); }
 
 	public Aircraft(String name, String destination, boolean addLog) {
 		this.name = name;
 		this.destination = destination;
 
 		status = (Util.getRandomInt(0, 100) > 50) ? STATUS_FLYING : STATUS_LANDED;
-		prevStatus = null;
+		prevStatus = (status.equals(STATUS_LANDED)) ? STATUS_PARKED : "NULL";
 
 		if (addLog) {
 			this.ID = Aircraft.ID_INC++;
@@ -90,7 +88,7 @@ public class Aircraft {
 	}
 
 	public @Override String toString() {
-		return String.format("%s [ID: %d]", getName(), getID());
+		return String.format("[ID: %d] %s", getID(), getName());
 	}
 
 	public synchronized void setStage(int newStage) { stage = newStage; } 
@@ -99,6 +97,8 @@ public class Aircraft {
 	public synchronized boolean isLanded() { return status.equals(STATUS_LANDED); }
 	public synchronized boolean isRunway() { return status.equals(STATUS_RUNWAY); }
 	public synchronized boolean isParked() { return status.equals(STATUS_PARKED); }
+
+	public synchronized boolean isTakingOff() { return (isRunway() && prevStatus.equals(STATUS_LANDED)); }
 
 	public synchronized int getID() { return ID; }
 	public synchronized int getStage() { return stage; }

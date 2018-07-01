@@ -10,10 +10,10 @@ public class AirportTrafficControl {
 
 	private AirportTrafficControl() {
 		// DEFAULT GAME SETUP
-		// runwayCount = 3
-		// airportSize = 5
-		// logsCount = 5
 		// aircraftsToSpawn = 10
+		// logsCount = 5
+		// airportSize = 5
+		// runwayCount = 3
 		this(3, 5, 5, 10);
 	}
 
@@ -41,23 +41,27 @@ public class AirportTrafficControl {
 		}
 
 		final long startTime = System.currentTimeMillis();
-		int spawnTime = 0;
+		int spawnTime = -1;
 		boolean spawning = false;
 		boolean ended = false;
 		
 		// Main Thread: Displaying & Spawning aircrafts
 		do {
+			// Determines whether to spawn aircrafts or not
+			boolean spawn = (!aircraftContainer.isFull() && aircraftsRemaining > 0);
+
 			// Display
 			Util.clearScreen();
-			Util.printCurrentTime(startTime, aircraftsRemaining);
+			Util.printCurrentTime(startTime, aircraftsRemaining, spawnTime);
 			Util.printAircraftStatuses(aircraftContainer.getArrayList());
 			Util.printRunwayStatuses(runways);
 			Util.printLogs(logsCount);
+			System.out.format("%s", (aircraftsRemaining <= 0) ? "Waiting for aircrafts to clear\n" : "");
 
 			// Spawn Aircraft
-			if (!aircraftContainer.isFull() && aircraftsRemaining > 0) {
+			if (spawn) {
 				if (!spawning) {
-					spawnTime = Util.getRandomInt(4, 7);
+					spawnTime = Util.getRandomInt(4, 6);
 					Util.addLog(String.format("Creating an Aircraft in %d seconds", spawnTime), 0);
 					spawning = true;
 				}
@@ -68,17 +72,13 @@ public class AirportTrafficControl {
 					spawning = false;
 				}
 			}
-
-			if (aircraftsRemaining <= 0) {
-				System.out.println("Waiting for aircrafts to clear\n");
-			}
 			
 			// Ending Condition
 			ended = (aircraftContainer.isEmpty()) && (aircraftsRemaining <= 0);
 
 			Thread.sleep(1000);
 
-			if (!aircraftContainer.isFull()) {
+			if (spawn) {
 				spawnTime -= 1;
 			}
 
@@ -88,6 +88,10 @@ public class AirportTrafficControl {
 
 		while (!runwayExecutor.isTerminated()) {
 			if (ended) {
+				for (Runway runway : runways) {
+					runway.stop();
+				}
+				
 				Util.writeToLogsSorted();
 				Util.printRunwayStats(runways, startTime, aircraftsToSpawn);
 				break;

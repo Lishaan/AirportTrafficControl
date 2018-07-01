@@ -10,8 +10,10 @@ public class Log {
 	}
 
 	public @Override String toString() {
-		return String.format("%s - %s", Util.formatTime(timeCreated), this.message);
+		return String.format("%s - %s", 
+			Util.formatTime(timeCreated), this.message);
 	}
 
 	public int getID() { return aircraftID; }
 }
+
