@@ -7,18 +7,19 @@ public class Runway implements Runnable {
 
 	private volatile boolean run;
 
-	private boolean shouldTakeoff = true;
+	private boolean shouldTakeoff;
 
 	private final int ID;
-	private volatile String status;
-	private volatile String currentAircraft;
-	private volatile int departureCount;
-	private volatile int arrivalCount;
+	private String status;
+	private String currentAircraft;
+	private int departureCount;
+	private int arrivalCount;
 
 	private final Container<Aircraft> aircraftContainer;
 
 	public Runway(Container<Aircraft> aircraftContainer) {
 		this.run = true;
+		this.shouldTakeoff = true;
 
 		this.ID = Runway.ID_INC++;
 		this.status = Runway.STATUS_FREE;
@@ -46,7 +47,7 @@ public class Runway implements Runnable {
 		}
 	}
 
-	public Aircraft fetchAircraft() {
+	private Aircraft fetchAircraft() {
 		Aircraft aircraft = new Aircraft();
 
 		synchronized(aircraftContainer) {
@@ -73,7 +74,7 @@ public class Runway implements Runnable {
 		return aircraft;
 	}
 
-	public void landing(Aircraft aircraft) {
+	private void landing(Aircraft aircraft) {
 
 		// If the plane is flying and ready to land
 		synchronized(aircraft) {
@@ -112,7 +113,7 @@ public class Runway implements Runnable {
 		}
 	}
 
-	public void takeoff(Aircraft aircraft) {
+	private void takeoff(Aircraft aircraft) {
 		boolean shouldRemove = false;
 
 		// If the plane is landed and ready to takeoff

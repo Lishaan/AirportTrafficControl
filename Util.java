@@ -14,7 +14,6 @@ class Util {
 			java.io.PrintWriter writer = new java.io.PrintWriter(logFile);
 
 			String startTime = Util.formatTime(System.currentTimeMillis());
-
 			String initString = String.format("Start time: %s\n\n", startTime);
 
 			writer.print(initString);
@@ -25,8 +24,7 @@ class Util {
 	}
 	
 	public synchronized static void addLog(String message, int ID) {
-		Log log = new Log(message, ID);
-		logs.add(log);
+		logs.add(new Log(message, ID));
 	}
 
 	public static void writeToLogsSorted() {
@@ -47,12 +45,12 @@ class Util {
 			}
 		}
 
-		for (int x = 0; x < spawns.size(); x++) {
-			writeToLogFile(spawns.get(x));
+		for (int i = 0; i < spawns.size(); i++) {
+			writeToLogFile(spawns.get(i));
 
-			for (int i = 0; i < logs.size(); i++) {
-				if (ID == logs.get(i).getID()) {
-					writeToLogFile(logs.get(i));
+			for (int j = 0; j < logs.size(); j++) {
+				if (ID == logs.get(j).getID()) {
+					writeToLogFile(logs.get(j));
 				}
 			}
 			writeToLogFile("");
@@ -95,7 +93,7 @@ class Util {
 		System.out.format("+ -- + ------------- + ---------------- + ------ + ----- +\n");
 		for (Aircraft a : aircrafts)
 			System.out.format("| %-2s | %-13s | %-16s | %-6s |   %-1s   |\n", a.getID(), a.getName(), a.getDestination(), a.getStatus(), a.getStage());
-		for (int i = 0; i < Airport.CAPACITY-aircrafts.size(); i++)
+		for (int i = 0; i < Airport.getCapacity()-aircrafts.size(); i++)
 			System.out.format("| %-2s | %-13s | %-16s | %-6s | %-5s |\n", "", "", "", "", "");
 		System.out.format("+ -- + ------------- + ---------------- + ------ + ----- +\n");
 
@@ -137,10 +135,12 @@ class Util {
 		int total_d = 0;
 
 		for (Runway runway : runways) {
-			String runway_out = String.format("- %s [Arrivals: %2d | Departures: %2d]",
-			runway.getName(),
-			runway.getArrivalCount(), 
-			runway.getDepartureCount());
+			String runway_out = String.format("- %s: %d [Arrivals: %2d | Departures: %2d]",
+				runway.getName(),
+				runway.getArrivalCount() + runway.getDepartureCount(),
+				runway.getArrivalCount(), 
+				runway.getDepartureCount()
+			);
 
 			total_a += runway.getArrivalCount();
 			total_d += runway.getDepartureCount();

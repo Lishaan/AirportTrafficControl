@@ -1,5 +1,5 @@
 public class Airport {
-	public static final int CAPACITY = 5;
+	private static int CAPACITY = 5;
 
 	private static final String[] AIRCRAFT_NAMES = {
 		"Airbus A350", 
@@ -31,4 +31,7 @@ public class Airport {
 
 		return new Aircraft(name, destination, true);
 	}
+
+	public static int getCapacity() { return CAPACITY; }
+	public static void setCapacity(int _CAPACITY) { CAPACITY = _CAPACITY; }
 }
