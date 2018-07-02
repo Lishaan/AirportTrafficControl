@@ -1,3 +1,4 @@
+import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
@@ -109,7 +110,7 @@ public class AirportTrafficControl {
 
 	// Creates a new instance of AirportTrafficControl that starts a menu and asks the user to choose the game setup type
 	public static AirportTrafficControl create() {
-		java.util.Scanner userInput = new java.util.Scanner(System.in);
+		Scanner userInput = new Scanner(System.in);
 
 		Util.clearScreen();
 		System.out.println("Airport Traffic Control v1.0\n");
@@ -129,14 +130,10 @@ public class AirportTrafficControl {
 		if (choice == 2) {
 			Util.clearScreen();
 			System.out.println("Custom Setup\n");
-			System.out.print("Aircrafts to spawn (recommended MAX=99): ");
-			int aircraftsToSpawn = userInput.nextInt();
-			System.out.print("Logs to display (recommended MAX=10): ");
-			int logsCount = userInput.nextInt();
-			System.out.print("Airport capacity: ");
-			int airportSize = userInput.nextInt();
-			System.out.print("Runways: ");
-			int runwayCount = userInput.nextInt();
+			final int aircraftsToSpawn = Util.getValidUserInputInt("Aircrafts to spawn (recommended MAX=99): ");
+			final int logsCount = Util.getValidUserInputInt("Logs to display (recommended MAX=10): ");
+			final int airportSize = Util.getValidUserInputInt("Airport capacity: ");
+			final int runwayCount = Util.getValidUserInputInt("Runways: ");
 			
 			Airport.setCapacity(airportSize);
 			return new AirportTrafficControl(runwayCount, airportSize, logsCount, aircraftsToSpawn);

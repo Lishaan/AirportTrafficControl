@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Util {
 	private static java.io.File logFile = new java.io.File("log.txt"); // Log File
@@ -227,4 +228,30 @@ public class Util {
 		
 		return fmt.format(zdt);
 	}
+
+	// Prompts the user until a valid integer (i > 0) has been entered by the user
+	public static int getValidUserInputInt(String message) {
+		int inputValue = -1;
+		boolean isValid = true;
+		do {		
+			try {
+				if (!isValid) {
+					System.out.println("\nError: Please enter a valid integer (i > 0)");
+				}
+
+				System.out.print(message);
+				inputValue = (new Scanner(System.in)).nextInt();
+
+				if (inputValue <= 0) {
+					isValid = false;
+				} else {
+					isValid = true;
+				}
+			} catch (java.util.InputMismatchException e) {
+				isValid = false;
+			}
+		} while (!isValid);
+
+		return inputValue;
+	}  
 }
