@@ -1,3 +1,4 @@
+// Airport is a static class that is primarily used as a factory for creating aircrafts.
 public class Airport {
 	private static int CAPACITY = 5;
 

@@ -1,3 +1,4 @@
+// Log is a simple class that represents a log statement. It is used to print logs into the console screen, and to the log file. 
 public class Log {
 	private final int aircraftID;
 	private final long timeCreated;

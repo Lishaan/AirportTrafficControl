@@ -1,3 +1,4 @@
+// Aircraft instances are the object that gets processed by the runway threads.
 public class Aircraft {
 	private static int ID_INC = 1;
 	private static final String STATUS_FLYING = "Flying";
@@ -39,6 +40,7 @@ public class Aircraft {
 		}
 	}
 
+	// Switches its status between FLYING and LANDED
 	public synchronized void switchStatus() {
 		if (status.equals(STATUS_FLYING)) {
 			status = STATUS_LANDED;
@@ -47,11 +49,13 @@ public class Aircraft {
 		}
 	}
 
+	// Sets the aicraft's status to RUNWAY
 	public synchronized void setAtRunway() {
 		prevStatus = status;
 		status = STATUS_RUNWAY;
 	}
 
+	// Change the status back to the previous from RUNWAY
 	public synchronized void unsetAtRunway() {
 		if (prevStatus == null) {
 			prevStatus = status;
@@ -60,11 +64,13 @@ public class Aircraft {
 		}
 	}
 
+	// Set the aircraft to park for x seconds, where (x = parkTime)
 	public synchronized void park(long parkTime) {
 		setParked();
 		releaseTime = System.currentTimeMillis() + parkTime;
 	}
 
+	// Checks whether the current time has passed the release time. If it has, release the aircraft from parking
 	public synchronized void checkParking() {
 		if (releaseTime != -1) {
 			if (System.currentTimeMillis() >= releaseTime) {
@@ -74,11 +80,13 @@ public class Aircraft {
 		} 
 	}
 
+	// Set the status to PARKED
 	public synchronized void setParked() {
 		prevStatus = status;
 		status = STATUS_PARKED;
 	}
 
+	// Unset the status from PARKED to the prevStatus
 	public synchronized void unsetParked() {
 		if (prevStatus == null) {
 			prevStatus = status;

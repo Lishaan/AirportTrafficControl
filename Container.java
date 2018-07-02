@@ -1,5 +1,6 @@
 import java.util.ArrayList;
-	
+
+// Container is a thread-safe class that is used as a data structure to store Aircrafts. 
 public class Container<T> {
 	private final int size;
 	private final ArrayList<T> items;

@@ -1,13 +1,15 @@
 import java.util.ArrayList;
 
-class Util {
-	private static java.io.File logFile = new java.io.File("log.txt");
-	private static ArrayList<Log> logs = new ArrayList<Log>();
+public class Util {
+	private static java.io.File logFile = new java.io.File("log.txt"); // Log File
+	private static ArrayList<Log> logs = new ArrayList<Log>(); // logs ArrayList
 
+	// Gets a random integer from the given range
 	public static int getRandomInt(int min, int max) {
 		return new java.util.Random().nextInt((max - min) + 1) + min;
 	}
 	
+	// Create and initialize the log file
 	public static void initLogFile() {
 		try {
 			logFile = new java.io.File("log.txt");
@@ -23,10 +25,12 @@ class Util {
 		}
 	}
 	
+	// Add log to the logs arraylist
 	public synchronized static void addLog(String message, int ID) {
 		logs.add(new Log(message, ID));
 	}
 
+	// Write all the logs from the arraylist to the log.txt file (SORTED)
 	public static void writeToLogsSorted() {
 		int ID = 1;
 		int highest = -1;
@@ -58,6 +62,7 @@ class Util {
 		}
 	}
 
+	// Appends the log to the log.txt file
 	private static void writeToLogFile(Log log) {
 		try {
 			java.nio.file.Files.write(
@@ -70,6 +75,7 @@ class Util {
 		}
 	}
 
+	// Appends the string to the log.txt file
 	private static void writeToLogFile(String message) {
 		try {
 			java.nio.file.Files.write(
@@ -82,6 +88,7 @@ class Util {
 		}
 	}
 
+	// Prints the first section of the main console display
 	public static void printCurrentTime(long startTime, int remainingAircrafts, int spawnTime) {
 		long currentTime = System.currentTimeMillis();
 
@@ -93,6 +100,7 @@ class Util {
 		);
 	}
 
+	// Prints the second section of the main console display: aircraft statuses
 	public static void printAircraftStatuses(ArrayList<Aircraft> aircrafts) {
 		System.out.println("Arrivals & Departures");
 		System.out.format("+ ---- + ------------- + ---------------- + ------ + ----- +\n");
@@ -111,6 +119,7 @@ class Util {
 		System.out.println();
 	}
 
+	// Prints the third section of the main console display: runway statuses
 	public static void printRunwayStatuses(Runway[] runways) {
 		System.out.println("Runway statuses");
 		System.out.format("+ ------------ + ---------------------------- + ---------- +\n");
@@ -127,6 +136,7 @@ class Util {
 		System.out.println();
 	}
 
+	// Prints the fourth section of the main console display: x recent logs
 	public static void printLogs(int count) {
 		int start = logs.size();
 		int end = logs.size()-count;
@@ -142,6 +152,7 @@ class Util {
 		System.out.println();
 	}
 
+	// Writes the last section of the log file and finalizes the file
 	public static void printRunwayStats(Runway[] runways, long startTime, int aircraftsProcessed) {
 		long endTime = System.currentTimeMillis();
 
@@ -183,8 +194,8 @@ class Util {
 		System.out.println(aircraftsProcessed_out);
 	}
 	
+	// Clears the console screen according to the operating system
 	public static void clearScreen() {
-        // Clears the console screen according to the operating system
 		try {
 			if (System.getProperty("os.name").contains("Windows")) {
 				new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -197,10 +208,12 @@ class Util {
 		}
 	}
 
+	// Formats time from millis to String pattern("HH:mm:ss") 
 	public static String formatTime(long millis) {
 		return formatTime(millis, false);
 	}
 
+	// Formats time from millis to String pattern("mm:ss")
 	public static String formatTime(long millis, boolean minsOnly) {
 		String timePattern = "HH:mm:ss";
 

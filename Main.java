@@ -1,3 +1,4 @@
+// The Main class is the driver class that creates an instance of AirportTrafficControl and starts it. 
 public class Main {
 	public static void main(String[] args) {
 		final AirportTrafficControl airportTrafficControl = AirportTrafficControl.create(); 

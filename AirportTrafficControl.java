@@ -1,6 +1,7 @@
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
+// AirportTrafficControl is the program class that contains all the logic for starting up the program’s execution.
 public class AirportTrafficControl {
 	private final Container<Aircraft> aircraftContainer;
 	private final Runway[] runways;
@@ -8,8 +9,8 @@ public class AirportTrafficControl {
 	private final int aircraftsToSpawn;
 	private final int logsCount;
 
+	// DEFAULT PROGRAM SETUP
 	private AirportTrafficControl() {
-		// DEFAULT GAME SETUP
 		// aircraftsToSpawn = 10
 		// logsCount = 5
 		// airportSize = 5
@@ -17,6 +18,7 @@ public class AirportTrafficControl {
 		this(3, 5, 5, 10);
 	}
 
+	// CUSTOM PROGRAM SETUP
 	private AirportTrafficControl(int runwayCount, int containerSize, int logsCount, int aircraftsToSpawn) {
 		aircraftContainer = new Container<Aircraft>(containerSize);
 
@@ -32,10 +34,12 @@ public class AirportTrafficControl {
 		this.logsCount = logsCount;
 	}
 
+	// Starts the program
 	public int start() throws InterruptedException {
 		Util.initLogFile();
 		int aircraftsRemaining = aircraftsToSpawn;
 
+		// Submit the runways into the runway executor
 		for (Runway runway : runways) {
 			runwayExecutor.execute(runway);
 		}
@@ -88,10 +92,12 @@ public class AirportTrafficControl {
 
 		while (!runwayExecutor.isTerminated()) {
 			if (ended) {
+				// Stop all the runways
 				for (Runway runway : runways) {
 					runway.stop();
 				}
 				
+				// Write the logs to the log.txt file
 				Util.writeToLogsSorted();
 				Util.printRunwayStats(runways, startTime, aircraftsToSpawn);
 				break;
@@ -101,6 +107,7 @@ public class AirportTrafficControl {
 		return 0;
 	}
 
+	// Creates a new instance of AirportTrafficControl that starts a menu and asks the user to choose the game setup type
 	public static AirportTrafficControl create() {
 		java.util.Scanner userInput = new java.util.Scanner(System.in);
 

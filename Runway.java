@@ -1,3 +1,6 @@
+import java.util.concurrent.atomic.AtomicInteger;
+
+// The Runway class is used to process aircrafts as they get added into the aircraft container. 
 public class Runway implements Runnable {
 	private static int ID_INC = 1;
 
@@ -7,13 +10,15 @@ public class Runway implements Runnable {
 
 	private volatile boolean run;
 
+	// Whether the runway should take off the current aircraft
 	private boolean shouldTakeoff;
 
 	private final int ID;
 	private String status;
 	private String currentAircraft;
-	private int departureCount;
-	private int arrivalCount;
+
+	private final AtomicInteger departureCount;
+	private final AtomicInteger arrivalCount;
 
 	private final Container<Aircraft> aircraftContainer;
 
@@ -24,8 +29,8 @@ public class Runway implements Runnable {
 		this.ID = Runway.ID_INC++;
 		this.status = Runway.STATUS_FREE;
 		this.currentAircraft = "None";
-		this.departureCount = 0;
-		this.arrivalCount = 0;
+		this.departureCount = new AtomicInteger(0);
+		this.arrivalCount = new AtomicInteger(0);
 
 		this.aircraftContainer = aircraftContainer;
 	}
@@ -47,6 +52,7 @@ public class Runway implements Runnable {
 		}
 	}
 
+	// Fetch the next free aircraft from the aircraft container
 	private Aircraft fetchAircraft() {
 		Aircraft aircraft = new Aircraft();
 
@@ -74,13 +80,14 @@ public class Runway implements Runnable {
 		return aircraft;
 	}
 
+	// If the aircraft is flying, then the runway should land the aircraft and set it for parking
 	private void landing(Aircraft aircraft) {
 
 		// If the plane is flying and ready to land
 		synchronized(aircraft) {
 			if (aircraft.isFlying()) {
 				aircraft.setAtRunway();
-				this.arrivalCount++;
+				arrivalCount.incrementAndGet();
 
 				// Landing (Arrivals)
 				aircraft.setStage(2);
@@ -113,6 +120,7 @@ public class Runway implements Runnable {
 		}
 	}
 
+	// If the aircraft is landed, and if it hasn't landed from this runway before, the runway will process its takeoff and remove it
 	private void takeoff(Aircraft aircraft) {
 		boolean shouldRemove = false;
 		final int extraTakeOffTime;
@@ -128,7 +136,7 @@ public class Runway implements Runnable {
 		synchronized(aircraft) {
 			if (aircraft.isLanded() && this.shouldTakeoff) {
 				aircraft.setAtRunway();
-				this.departureCount++;
+				this.departureCount.incrementAndGet();
 
 				// Takeoff (Departure)
 				aircraft.setStage(4);
@@ -177,8 +185,8 @@ public class Runway implements Runnable {
 	public String getName() { return "Runway " + ID; }
 	public String getStatus() { return status; }
 	public String getCurrentAircraft() { return currentAircraft; }
-	public int getDepartureCount() { return departureCount; }
-	public int getArrivalCount() { return arrivalCount; }
+	public int getDepartureCount() { return departureCount.get(); }
+	public int getArrivalCount() { return arrivalCount.get(); }
 
 	private boolean getTakingOff() {
 		for (Aircraft aircraft : aircraftContainer.getArrayList()) {
