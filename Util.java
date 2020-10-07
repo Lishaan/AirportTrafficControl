@@ -233,6 +233,7 @@ public class Util {
 	public static int getValidUserInputInt(String message) {
 		int inputValue = -1;
 		boolean isValid = true;
+		
 		do {		
 			try {
 				if (!isValid) {
@@ -240,7 +241,10 @@ public class Util {
 				}
 
 				System.out.print(message);
-				inputValue = (new Scanner(System.in)).nextInt();
+				Scanner scanner = new Scanner(System.in);
+
+				inputValue = scanner.nextInt();
+				scanner.close();
 
 				if (inputValue <= 0) {
 					isValid = false;

@@ -108,10 +108,8 @@ public class AirportTrafficControl {
 		return 0;
 	}
 
-	// Creates a new instance of AirportTrafficControl that starts a menu and asks the user to choose the game setup type
+	// Creates a new instance of AirportTrafficControl that starts a menu and asks the user to choose the simulation setup type
 	public static AirportTrafficControl create() {
-		Scanner userInput = new Scanner(System.in);
-
 		Util.clearScreen();
 		System.out.println("Airport Traffic Control v1.0\n");
 		System.out.println("1. Default Setup");
@@ -121,11 +119,14 @@ public class AirportTrafficControl {
 		System.out.println(" - Runways: 3\n");
 		System.out.println("2. Custom Setup\n");
 		
+		Scanner userInput = new Scanner(System.in);
 		int choice;
 		do {
 			System.out.print("Choice: ");
 			choice = userInput.nextInt();
 		} while (choice > 2 || choice < 1);
+
+		userInput.close();
 
 		if (choice == 2) {
 			Util.clearScreen();
